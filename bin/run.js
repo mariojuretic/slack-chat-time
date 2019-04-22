@@ -1,24 +1,24 @@
 "use strict";
 
+const config = require("../config");
+const log = config.log();
 const request = require("superagent");
-const service = require("../server/service");
+const service = require("../server/service")(config);
 const http = require("http");
 
 const server = http.createServer(service);
 server.listen();
 
 server.on("listening", function() {
-  console.log(`Time microservice is listening on port ${server.address().port} in ${service.get("env")} mode.`);
+  log.info(`Time microservice is listening on port ${server.address().port} in ${service.get("env")} mode.`);
 
   const announce = () => {
-    request.put(`http://127.0.0.1:3000/service/time/${server.address().port}`, (err, res) => {
+    request.put(`http://127.0.0.1:3000/service/time/${server.address().port}`, err => {
       if (err) {
-        console.log(err);
-        console.log("Error connecting to application.");
+        log.debug(err);
+        log.info("Error connecting to application.");
         return;
       }
-
-      console.log(res.body);
     });
   };
 
