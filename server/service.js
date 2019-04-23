@@ -9,6 +9,10 @@ module.exports = config => {
   const log = config.log();
 
   service.get("/service/:location", (req, res) => {
+    if (req.get("X-APP-SERVICE-TOKEN") !== config.serviceAccessToken) {
+      return res.sendStatus(403);
+    }
+
     request.get(
       `https://eu1.locationiq.com/v1/search.php?key=${config.locationiqApiKey}&q=${encodeURI(req.params.location)}&format=json`,
       (err, response) => {
