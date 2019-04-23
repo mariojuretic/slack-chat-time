@@ -1,5 +1,6 @@
 require("dotenv").config();
 const bunyan = require("bunyan");
+const serviceAccessToken = require("crypto").randomBytes(16).toString("hex").slice(0, 32);
 
 const log = {
   development: () => {
@@ -16,6 +17,8 @@ const log = {
 module.exports = {
   locationiqApiKey: process.env.LOCATIONIQ_API_KEY,
   timezonedbApiKey: process.env.TIMEZONEDB_API_KEY,
+  appApiToken: process.env.APP_API_TOKEN,
+  serviceAccessToken,
   log: env => {
     if (env) return log[env]();
     return log[process.env.NODE_ENV || "development"]();

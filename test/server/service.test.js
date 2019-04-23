@@ -18,12 +18,21 @@ describe("the express service", () => {
     it("should return HTTP 200 with valid result", done => {
       request(service)
         .get("/service/vienna")
+        .set("X-APP-SERVICE-TOKEN", config.serviceAccessToken)
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
           expect(res.body.result).to.exist;
           return done();
         });
+    });
+
+    it("should return HTTP 403 if invalid service token provided", done => {
+      request(service)
+        .get("/service/vienna")
+        .set("X-APP-SERVICE-TOKEN", "something")
+        .expect(403)
+        .end(done);
     });
   });
 });

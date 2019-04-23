@@ -13,13 +13,16 @@ server.on("listening", function() {
   log.info(`Time microservice is listening on port ${server.address().port} in ${service.get("env")} mode.`);
 
   const announce = () => {
-    request.put(`http://127.0.0.1:3000/service/time/${server.address().port}`, err => {
-      if (err) {
-        log.debug(err);
-        log.info("Error connecting to application.");
-        return;
-      }
-    });
+    request.put(`http://127.0.0.1:3000/service/time/${server.address().port}`)
+      .set("X-APP-SERVICE-TOKEN", config.serviceAccessToken)
+      .set("X-APP-API-TOKEN", config.appApiToken)
+      .end(err => {
+        if (err) {
+          log.debug(err);
+          log.info("Error connecting to application.");
+          return;
+        }
+      });
   };
 
   announce();
